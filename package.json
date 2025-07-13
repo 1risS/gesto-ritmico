@@ -1,5 +1,13 @@
 {
   "dependencies": {
-    "fingerpose": "^0.1.0"
-  }
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "gesto-ritmico",
+  "version": "1.0.0",
+  "main": "fingerpose.js",
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
