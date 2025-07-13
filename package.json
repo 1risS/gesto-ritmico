@@ -1,5 +1,15 @@
 {
   "dependencies": {
-    "fingerpose": "^0.1.0"
-  }
+    "express": "^5.1.0",
+    "osc": "^2.4.5"
+  },
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "name": "gesto-ritmico",
+  "version": "1.0.0",
+  "main": "fingerpose.js",
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
