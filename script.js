@@ -16,6 +16,9 @@ const gestureStrings = {
   victory: '✌🏻'
 }
 
+let oscPort = null;
+let oscReady = false;
+
 async function createDetector () {
   return window.handPoseDetection.createDetector(
     window.handPoseDetection.SupportedModels.MediaPipeHands,
@@ -26,6 +29,26 @@ async function createDetector () {
       solutionPath: `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915`
     }
   )
+}
+
+function sendOscMessage(result, oscPort, hand) {
+  if (!oscReady) {
+    console.warn('OSC port is not ready yet')
+    return
+  }
+
+  const gestureName = result.name.toLowerCase()
+  const gestureValue = gestureStrings[gestureName] || gestureName
+
+  oscPort.send({
+    address: `/gesture/${hand}`,
+    args: [
+      { type: 's', value: gestureValue },
+      { type: 'f', value: result.score }
+    ]
+  })
+
+  console.log(`Sent OSC message for ${hand} hand: ${gestureValue} (${result.score})`)
 }
 
 async function main () {
@@ -75,6 +98,8 @@ async function main () {
         })
         const chosenHand = hand.handedness.toLowerCase()
         resultLayer[chosenHand].innerText = gestureStrings[result.name]
+        console.log(`Gesture detected: ${result.name} (${result.score})`)
+        sendOscMessage(result, oscPort, chosenHand)
         updateDebugInfo(est.poseData, chosenHand)
       }
     }
@@ -146,4 +171,16 @@ window.addEventListener('DOMContentLoaded', () => {
   canvas.width = config.video.width
   canvas.height = config.video.height
   console.log('Canvas initialized')
+
+  oscPort = new osc.WebSocketPort({
+    url: "ws://localhost:8000",
+    metadata: true
+  });
+
+  oscPort.open();
+
+  oscPort.on("ready", function () {
+    console.log("OSC WebSocket Port is ready");
+    oscReady = true
+  });
 })

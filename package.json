@@ -4,7 +4,7 @@
     "osc": "^2.4.5"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.mjs"
   },
   "name": "gesto-ritmico",
   "version": "1.0.0",
